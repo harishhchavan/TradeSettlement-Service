@@ -10,6 +10,7 @@ import play.api.libs.json._
 
 import java.sql.{Connection, DriverManager}
 import java.time.Instant
+import java.util.concurrent.{Executors, TimeUnit}
 
 object SettlementService {
 
@@ -21,10 +22,14 @@ object SettlementService {
     val ampsConfig = AmpsConfig.ampsConfig
 
     println("=" * 60)
-    println("HARISH - SETTLEMENT SERVICE")
+    println("Welcome to")
+    println("SETTLEMENT SERVICE by HARISH")
     println("=" * 60)
 
     val client = AmpsClientUtil.connect("SettlementService")
+
+    // ---------------- Scheduler ----------------
+    val scheduler = Executors.newSingleThreadScheduledExecutor()
 
     try {
       println("Connected to AMPS Server")
@@ -53,11 +58,13 @@ object SettlementService {
                   dbConfig.dbPassword
                 )
 
+              println("Connected to Shared Database...")
+
               try {
                 conn.setAutoCommit(false)
                 updateSettlementInDB(conn, settled)
                 conn.commit()
-                println(s"Trade ${settled.trade_id} settled successful.")
+                println(s"Trade ${settled.trade_id} settled successfully.")
 
               } catch {
                 case e: Exception =>
@@ -69,22 +76,33 @@ object SettlementService {
               }
 
             case JsError(errors) =>
-              println("Invalid JSON")
+              println("Invalid JSON received")
               println(errors)
           }
         }
       }
 
       val cmd = new Command("subscribe")
-        .setTopic(ampsConfig.topicTradesFigured)
+        .setTopic(ampsConfig.topicTradesFigurated)
 
       client.executeAsync(cmd, handler)
 
-      println("Listening to AMPS topic: " + ampsConfig.topicTradesFigured)
-      Thread.sleep(300000)
+      println(s"Listening to AMPS topic: #${ampsConfig.topicTradesFigurated}")
+
+      // -------- Scheduler task (keeps service alive) --------
+      scheduler.scheduleAtFixedRate(
+        () => println(s"[Heartbeat] SettlementService alive @ ${Instant.now()}"),
+        0,
+        60,
+        TimeUnit.SECONDS
+      )
 
     } finally {
-      client.close()
+      sys.addShutdownHook {
+        println("Shutting down SettlementService...")
+        scheduler.shutdown()
+        client.close()
+      }
     }
   }
 
@@ -92,9 +110,9 @@ object SettlementService {
 
   private def settleTrade(t: Trade): Trade = {
 
-    val commission = t.quantity * t.price * 0.003
-    val tax        = t.quantity * t.price * 0.005
     val gross      = t.quantity * t.price
+    val commission = gross * 0.003
+    val tax        = gross * 0.005
     val net        = gross - commission - tax
 
     t.copy(
@@ -124,6 +142,6 @@ object SettlementService {
 
     ps.executeUpdate()
     ps.close()
+    println("Updated Trade in Database")
   }
 }
-

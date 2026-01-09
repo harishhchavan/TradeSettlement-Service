@@ -6,7 +6,7 @@ case class AmpsConfig(
                        topicTradesRaw: String,
                        topicTradesEnriched: String,
                        topicTradesValidated: String,
-                       topicTradesFigured: String,
+                       topicTradesFigurated: String,
                        topicTradesSettled: String
                      )
 
@@ -17,7 +17,7 @@ object AmpsConfig extends AbstractConfig {
     topicTradesRaw = config.getString("amps.topicTradesRaw"),
     topicTradesEnriched = config.getString("amps.topicTradesEnriched"),
     topicTradesValidated = config.getString("amps.topicTradesValidated"),
-    topicTradesFigured = config.getString("amps.topicTradesFigured"),
+    topicTradesFigurated = config.getString("amps.topicTradesFigurated"),
     topicTradesSettled = config.getString("amps.topicTradesSettled")
   )
 }
