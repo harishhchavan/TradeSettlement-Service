@@ -26,9 +26,9 @@ dependencies {
     implementation libs.guava
 
     // Use Scalatest for testing our library
-    testImplementation libs.junit
+//    testImplementation libs.junit
+//    testImplementation libs.junit.v4.v13.v2.v13
     testImplementation libs.scalatest.v2.v13
-    testImplementation libs.junit.v4.v13.v2.v13
 
     // Need scala-xml at test runtime
     testRuntimeOnly libs.scala.xml.v2.v13
@@ -53,6 +53,18 @@ dependencies {
     //From Maven Central:
     implementation "com.crankuptheamps:amps-client:5.3.5.0"
 
+    // Cucumber (Java Annotations)
+    testImplementation "io.cucumber:cucumber-java:7.26.0"
+    testImplementation "io.cucumber:cucumber-junit-platform-engine:7.26.0"
+
+    // JUnit 5
+    testImplementation "org.junit.jupiter:junit-jupiter-api:5.10.1"
+    testRuntimeOnly "org.junit.jupiter:junit-jupiter-engine:5.10.1"
+
+}
+
+test{
+    useJUnitPlatform()
 }
 
 // Apply a specific Java toolchain to ease working on different environments.

@@ -11,13 +11,15 @@ case class AmpsConfig(
                      )
 
 object AmpsConfig extends AbstractConfig {
+
   val ampsConfig: AmpsConfig = AmpsConfig(
-    host = config.getString("amps.host"),
-    port = config.getInt("amps.port"),
-    topicTradesRaw = config.getString("amps.topicTradesRaw"),
-    topicTradesEnriched = config.getString("amps.topicTradesEnriched"),
-    topicTradesValidated = config.getString("amps.topicTradesValidated"),
-    topicTradesFigurated = config.getString("amps.topicTradesFigurated"),
-    topicTradesSettled = config.getString("amps.topicTradesSettled")
+
+                          host = config.getString("amps.host"),
+                          port = config.getInt("amps.port"),
+                          topicTradesRaw = config.getString("amps.topicTradesRaw"),
+                          topicTradesEnriched = config.getString("amps.topicTradesEnriched"),
+                          topicTradesValidated = config.getString("amps.topicTradesValidated"),
+                          topicTradesFigurated = config.getString("amps.topicTradesFigurated"),
+                          topicTradesSettled = config.getString("amps.topicTradesSettled")
   )
 }

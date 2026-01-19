@@ -6,6 +6,7 @@ import com.trade.model.Trade
 import com.trade.config.DbConfig
 import com.trade.util.AmpsClientUtil
 import com.trade.config.AmpsConfig
+
 import play.api.libs.json._
 
 import java.sql.{Connection, DriverManager}
@@ -49,7 +50,8 @@ object SettlementService {
 
             case JsSuccess(trade, _) =>
 
-              val settled = settleTrade(trade)
+              val processor = new SettlementProcessor
+              val settled = processor.settleTrade(trade)
 
               val conn: Connection =
                 DriverManager.getConnection(
@@ -91,9 +93,9 @@ object SettlementService {
 
       // -------- Scheduler task (keeps service alive) --------
       scheduler.scheduleAtFixedRate(
-        () => println(s"[Heartbeat] SettlementService alive @ ${Instant.now()}"),
+        () => println(s"[Schedular Heartbeat] SettlementService alive @ ${Instant.now()}"),
         0,
-        60,
+        30,
         TimeUnit.SECONDS
       )
 
@@ -108,23 +110,7 @@ object SettlementService {
 
   // ---------------- Settlement Logic ----------------
 
-  private def settleTrade(t: Trade): Trade = {
 
-    val gross      = t.quantity * t.price
-    val commission = gross * 0.003
-    val tax        = gross * 0.005
-    val net        = gross - commission - tax
-
-    t.copy(
-      broker_id     = "BRK-101",
-      commission    = commission,
-      tax           = tax,
-      gross_amount  = gross,
-      net_amount    = net,
-      received_time = Instant.now().toString,
-      status        = "SETTLED"
-    )
-  }
 
   private def updateSettlementInDB(conn: Connection, t: Trade): Unit = {
 

@@ -24,5 +24,27 @@ case class Trade(
                 )
 
 object Trade {
+
   implicit val tradeFormat: Format[Trade] = Json.format[Trade]
+
+  def empty(): Trade = Trade(
+    trade_id = 0,
+    order_id = "",
+    execution_id = "",
+    symbol = "",
+    side = "",
+    quantity = BigDecimal(0),
+    price = BigDecimal(0),
+    trade_time = "",
+    venue = "",
+    currency = "",
+    account_id = "",
+    broker_id = "",
+    commission = BigDecimal(0),
+    tax = BigDecimal(0),
+    gross_amount = BigDecimal(0),
+    net_amount = BigDecimal(0),
+    received_time = "",
+    status = ""
+  )
 }
