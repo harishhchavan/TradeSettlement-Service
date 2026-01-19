@@ -55,6 +55,11 @@ dependencies {
 
     // Cucumber (Java Annotations)
     testImplementation "io.cucumber:cucumber-java:7.26.0"
+
+    //Cucumber (ScalaDsl)
+    testImplementation "io.cucumber:cucumber-scala_2.13:8.20.0"
+
+    //To run without creating extra TestRunner class (Applicable only after JUnit 5)
     testImplementation "io.cucumber:cucumber-junit-platform-engine:7.26.0"
 
     // JUnit 5

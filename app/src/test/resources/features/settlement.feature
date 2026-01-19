@@ -6,9 +6,7 @@ Feature: Trade settlement processing
   Background:
     Given a valid trade with required fields populated
 
-  # ---------------------------------------------------------
   # Happy path
-  # ---------------------------------------------------------
 
   Scenario: Successfully settle a valid trade
     Given the trade has quantity 100 and price 50
@@ -21,9 +19,7 @@ Feature: Trade settlement processing
     And the broker id should be assigned
     And the received time should be populated
 
-  # ---------------------------------------------------------
   # Business rules & assumptions
-  # ---------------------------------------------------------
 
   Scenario: Settlement assumes trade is already validated
     Given the trade has passed validation in upstream services
@@ -31,9 +27,7 @@ Feature: Trade settlement processing
     Then the settlement processor should not perform validation checks
     And the trade should be settled successfully
 
-  # ---------------------------------------------------------
   # Idempotency / safety behavior
-  # ---------------------------------------------------------
 
   Scenario: Settling an already settled trade
     Given the trade status is "SETTLED"
@@ -41,9 +35,7 @@ Feature: Trade settlement processing
     Then the settlement processor recalculates the trade
     And the database layer prevents overriding the existing settlement
 
-  # ---------------------------------------------------------
   # Edge cases (documented behavior)
-  # ---------------------------------------------------------
 
   Scenario: Settling a trade with zero quantity
     Given the trade has quantity 0 and price 50
@@ -63,9 +55,7 @@ Feature: Trade settlement processing
     And the net amount should be 0
     And the trade status should be "SETTLED"
 
-  # ---------------------------------------------------------
   # Calculation correctness
-  # ---------------------------------------------------------
 
   Scenario Outline: Settlement calculation accuracy
     Given the trade has quantity <quantity> and price <price>
@@ -81,9 +71,7 @@ Feature: Trade settlement processing
       | 5        | 200   | 1000  | 3.0        | 5.0 | 992 |
       | 1        | 1     | 1     | 0.003      | 0.005 | 0.992 |
 
-  # ---------------------------------------------------------
   # Audit / traceability
-  # ---------------------------------------------------------
 
   Scenario: Settlement populates audit fields
     Given the trade is ready for settlement
